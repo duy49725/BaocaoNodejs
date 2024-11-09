@@ -25,6 +25,15 @@ export const loginUser = createAsyncThunk('/auth/login',
     }
 )
 
+export const loginGoogle = createAsyncThunk('/auth/google',
+    async (formData) => {
+        const response = await axios.post('http://localhost:5000/api/auth/google', formData, {
+            withCredentials: true,
+        })
+        return response.data;
+    }
+)
+
 export const logoutUser = createAsyncThunk("/auth/logout",
     async () => {
         const response = await axios.post(
@@ -48,6 +57,15 @@ export const checkAuth = createAsyncThunk('/auth/checkauth',
                 }
             }
         )
+        return response.data;
+    }
+)
+
+export const updateCurrentUser = createAsyncThunk('/auth/updateCurrentUser',
+    async ({formData, userId}) => {
+        const response = await axios.put(`http://localhost:5000/api/admin/user/update/${userId}`,formData, {
+            withCredentials: true,
+        })
         return response.data;
     }
 )
@@ -89,6 +107,19 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isAuthenticated = false;
             })
+            .addCase(loginGoogle.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(loginGoogle.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload.success ? action.payload.user : null;
+                state.isAuthenticated = action.payload.success ? true : false
+            })
+            .addCase(loginGoogle.rejected, (state, action) => {
+                state.isLoading = false;
+                state.user = null;
+                state.isAuthenticated = false;
+            })
             .addCase(checkAuth.pending, (state) => {
                 state.isLoading = true
             })
@@ -106,6 +137,19 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = null;
                 state.isAuthenticated = false
+            })
+            .addCase(updateCurrentUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateCurrentUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload.success ? action.payload.user : null;
+                state.isAuthenticated = action.payload.success
+            })
+            .addCase(updateCurrentUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.user = null;
+                state.isAuthenticated = false;
             })
     }
 })

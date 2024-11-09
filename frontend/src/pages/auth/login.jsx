@@ -1,4 +1,4 @@
-
+import OAuth from '@/components/auth/OAuth';
 import CommonForm from '@/components/common/form';
 import { loginFormControls } from '@/components/config';
 import { useToast } from '@/hooks/use-toast';
@@ -46,6 +46,7 @@ const AuthLogin = (event) => {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
+      <OAuth />
     </div>
   )
 }

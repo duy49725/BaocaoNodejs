@@ -101,4 +101,90 @@ const updateUserActiveStatus = async(req, res) => {
     }
 }
 
-module.exports = {getAllUser, createUser, deleteUser, updateUserActiveStatus}
+const getUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            })
+        }
+        const {password, ...rest} = user._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Some error occurred",
+            error: error.message
+        });
+    }
+}
+
+const updateUser = async(req, res, next) => {
+    if(req.user.id !== req.params.userId){
+        return res.status(403).json({
+            success: false,
+            message: "You are not allowed to update this user",
+        });
+    }
+    if(req.body.password){
+        if(req.body.password.length < 6){
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters",
+            });
+        }
+        req.body.password = bcrypt.hashSync(req.body.password,12)
+    }
+    if(req.body.userName){
+        if(req.body.userName.length < 7 || req.body.userName.length > 20){
+            return res.status(400).json({
+                success: false,
+                message: "Username must be between 7 and 20 characters",
+            });
+        }
+        if(req.body.userName.includes(' ')){
+            return res.status(400).json({
+                success: false,
+                message: "Username cannot contain spaces",
+            });
+        }
+        if(req.body.userName !== req.body.userName.toLowerCase()){
+            return res.status(400).json({
+                success: false,
+                message: "Password must be at least 6 characters",
+            });
+        }
+        if(!req.body.userName.match(/^[a-zA-Z0-9]+$/)){
+            return res.status(400).json({
+                success: false,
+                message: "Username can only contain letters and numbers",
+            });
+        }
+    }
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.userId,{
+                $set: {
+                    userName: req.body.userName,
+                    email: req.body.email,
+                    profilePircture: req.body.profilePicture,
+                    password: req.body.password
+                }
+            },{new:true}
+        )
+        const {password, ...rest} = updatedUser._doc;
+        res.status(200).json({
+            success: true,
+            message: 'Authenticated user!',
+            user: rest
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Some error occurred",
+        });
+    }
+}
+module.exports = {getUser, getAllUser, createUser, deleteUser, updateUserActiveStatus, updateUser}

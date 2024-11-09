@@ -1,3 +1,4 @@
+import OAuth from "@/components/auth/OAuth";
 import CommonForm from "@/components/common/form";
 import { registerFormControls } from "@/components/config";
 import { useToast } from "@/hooks/use-toast";
@@ -49,6 +50,7 @@ const AuthRegister = () => {
                 setFormData={setFormData}
                 onSubmit={onSubmit}
             />
+            <OAuth />
         </div>
     )
 }

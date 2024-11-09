@@ -24,6 +24,11 @@ import ProductDetailScreen from './pages/shopping-view/product-details';
 import AdminPublisherPage from './pages/admin-view/publisher';
 import UserManagement from './pages/admin-view/user';
 import AdminFeature from './pages/admin-view/feature';
+import CreatePost from './components/admin-view/createpost';
+import AdminPost from './pages/admin-view/post';
+import UpdatePost from './components/admin-view/updatepost';
+import ShoppingBlog from './pages/shopping-view/blog';
+import ShoppingPost from './pages/shopping-view/postpage';
 
 const App = () => {
   const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
@@ -33,7 +38,7 @@ const App = () => {
     dispatch(checkAuth())
   }, [dispatch])
   if (isLoading) return <Skeleton className="w-[800] bg-black h-[800px]" />;
-  return (
+  return (  
     <div className='flex flex-col overflow-hidden bg-white'>
       <Routes>
         <Route path='/' element={
@@ -58,11 +63,13 @@ const App = () => {
           <Route path='home' element={<Home />} />
           <Route path='listing' element={<ShoppingListing />} />
           <Route path='account' element={<ShoppingAccount/>} />
+          <Route path='blog' element={<ShoppingBlog/>} />
           <Route path='checkout' element={<ShoppingCheckout/>} />
           <Route path='search' element={<SearchProduct />} />
           <Route path="product/:productId" element={<ProductDetailScreen />} /> 
           <Route path='payment-success' element={<PaymentSuccess />}/> 
           <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path='shoppingpost/:postSlug' element={<ShoppingPost /> } />    
         </Route>
         <Route
           path='/admin' element={
@@ -70,13 +77,16 @@ const App = () => {
             <AdminLayout />
           </CheckAuth>}
         >
+          <Route path='createpost' element={<CreatePost />} />
+          <Route path='updatepost/:postId' element={<UpdatePost />} />
           <Route path='dashboard' element={<AdminDashboard />} />
           <Route path='products' element={<AdminProduct />} />
           <Route path='orders' element={<AdminOrderView />} />
           <Route path='category' element={<AdminCategoryPage />} /> 
           <Route path='publisher' element={<AdminPublisherPage />} />
           <Route path='user' element={<UserManagement />} />     
-          <Route path='feature' element={<AdminFeature />} />             
+          <Route path='feature' element={<AdminFeature />} />   
+          <Route path='post' element={<AdminPost /> } />    
         </Route>
       </Routes>
     </div>

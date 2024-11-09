@@ -16,7 +16,8 @@ const adminOrderRouter = require('./routes/admin/order-routes');
 const shopReviewRouter = require('./routes/shop/review-routes');
 const adminUserRoutes = require('./routes/admin/user-routes');
 const adminDashboardRoutes = require('./routes/admin/dashboard-routes');
-
+const adminPostRoutes = require('./routes/admin/post-routes');
+const adminCommentRoutes = require('./routes/admin/comment-routes');
 mongoose.connect('mongodb+srv://duy49725:hZENb3CXpNcL4x2s@cluster0.nrc2f.mongodb.net/mern')
     .then()
     .catch((error) => console.log(error));
@@ -27,7 +28,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: 'http://localhost:5173', // Địa chỉ của frontend
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         allowedHeaders: [
             "Content-Type",
@@ -41,10 +42,16 @@ app.use(
 );
 
 
+
 app.use(cookieParser());
 app.use(express.json());
-
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    next();
+});
 app.use('/api/auth', authRouter);
+app.use('/api/admin/post', adminPostRoutes);
 app.use('/api/admin/products', adminProductRouter);
 app.use('/api/admin/category', adminCategoryRouter);
 app.use('/api/admin/orders', adminOrderRouter);
@@ -58,5 +65,6 @@ app.use('/api/shop/review', shopReviewRouter)
 app.use('/api/admin/publisher', adminPublisherRouter);
 app.use('/api/admin/user', adminUserRoutes);
 app.use('/api/admin/dashboard', adminDashboardRoutes);
+app.use('/api/admin/comment', adminCommentRoutes);
 
 app.listen(PORT, () => console.log(`Server is now running on ${PORT}`))

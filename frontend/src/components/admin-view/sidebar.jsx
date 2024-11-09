@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { useNavigate } from 'react-router-dom';
-import { BadgeCheck, ChartNoAxesCombined, LayoutDashboard, PictureInPicture, ShoppingBasket, SpadeIcon, SquareParkingOffIcon, User } from 'lucide-react';
+import { BadgeCheck, BluetoothSearching, ChartNoAxesCombined, LayoutDashboard, Newspaper, PictureInPicture, ShoppingBasket, SpadeIcon, SquareParkingOffIcon, User } from 'lucide-react';
 
 export const adminSidebarMenuItems = [
     {
@@ -46,6 +46,12 @@ export const adminSidebarMenuItems = [
         path: '/admin/feature',
         icon: <PictureInPicture />,
     },
+    {
+        id: 'post',
+        label: 'Post',
+        path: '/admin/post',
+        icon: <Newspaper />
+    }
 ]
 
 function MenuItems({setOpen}){
