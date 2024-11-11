@@ -2,7 +2,7 @@ import ProductDetailsDialog from '@/components/shopping-view/product-details';
 import ShoppingProductTile from '@/components/shopping-view/product-tile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
+import { toast, useToast } from '@/hooks/use-toast';
 import { getFeatureImages } from '@/store/common-slice';
 import { addToCart, fetchCartItems } from '@/store/shop/cart-slice';
 import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop/products-slice';
@@ -35,6 +35,7 @@ const Home = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { productList, productDetails } = useSelector((state) => state.shopProducts);
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const { user } = useSelector((state) => state.auth);

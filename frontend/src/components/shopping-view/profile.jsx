@@ -9,18 +9,17 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { checkAuth, updateCurrentUser } from '@/store/auth-slice';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
-
-const initialState = {
-    userName: '',
-    email: '',
-    password: '',
-    profilePicture: ''
-
-}
 const ShoppingProfile = () => {
-    const { user, isLoading } = useSelector((state) => state.auth);
+    const { user, isLoading, error } = useSelector((state) => state.auth);
+    const initialState = {
+        userName: user?.userName,
+        email: user?.email,
+        password: user?.password,
+        profilePicture: user?.profilePircture
+    
+    }
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -33,7 +32,6 @@ const ShoppingProfile = () => {
     const filePickerRef = useRef();
     const { toast } = useToast();
     const dispatch = useDispatch();
-    console.log(formData)
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -41,6 +39,7 @@ const ShoppingProfile = () => {
             setImageFileUrl(URL.createObjectURL(file));
         }
     }
+    console.log(formData);
     useEffect(() => {
         if (imageFile) {
             uploadImage();
@@ -109,8 +108,8 @@ const ShoppingProfile = () => {
                 setUpdateUserSuccess("User's profile updated successfully");
             }*/
             dispatch(updateCurrentUser({
+                formData: formData,
                 userId: user?.id,
-                formData
             })).then((data) => {
                 if (data?.payload?.success) {
                     toast({
@@ -118,7 +117,7 @@ const ShoppingProfile = () => {
                     });
                 } else {
                     toast({
-                        title: data?.payload?.message,
+                        title: error,
                         variant: "destructive"
                     })
                 }
@@ -127,7 +126,7 @@ const ShoppingProfile = () => {
             setUpdateUserError(error.message);
         }
     }
-    console.log(user.id)
+    console.log(error);
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
             <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>

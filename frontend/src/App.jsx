@@ -29,6 +29,7 @@ import AdminPost from './pages/admin-view/post';
 import UpdatePost from './components/admin-view/updatepost';
 import ShoppingBlog from './pages/shopping-view/blog';
 import ShoppingPost from './pages/shopping-view/postpage';
+import Contact from './pages/shopping-view/contact';
 
 const App = () => {
   const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
@@ -69,7 +70,8 @@ const App = () => {
           <Route path="product/:productId" element={<ProductDetailScreen />} /> 
           <Route path='payment-success' element={<PaymentSuccess />}/> 
           <Route path="paypal-return" element={<PaypalReturnPage />} />
-          <Route path='shoppingpost/:postSlug' element={<ShoppingPost /> } />    
+          <Route path='shoppingpost/:postSlug' element={<ShoppingPost /> } />
+          <Route path='contact' element={<Contact/>}/>    
         </Route>
         <Route
           path='/admin' element={

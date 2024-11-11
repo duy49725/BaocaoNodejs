@@ -21,7 +21,9 @@ function MenuItems() {
         sessionStorage.removeItem("filters");
         const currentFilter = getCurrentMenuItem.id !== "home" &&
             getCurrentMenuItem.id !== "products" &&
-            getCurrentMenuItem.id !== "search"
+            getCurrentMenuItem.id !== "search" &&
+            getCurrentMenuItem.id !== "contact" &&
+            getCurrentMenuItem.id !== "blog"
                 ? {category: [getCurrentMenuItem.id]} : null
         sessionStorage.setItem("filters", JSON.stringify(currentFilter));
         location.pathname.includes("listing") && currentFilter !== null

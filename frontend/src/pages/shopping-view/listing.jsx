@@ -10,6 +10,7 @@ import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop/prod
 import ShoppingProductTile from '@/components/shopping-view/product-tile'
 import { addToCart, fetchCartItems } from '@/store/shop/cart-slice'
 import ProductDetailsDialog from '@/components/shopping-view/product-details'
+import { useToast } from '@/hooks/use-toast'
 
 function createSearchParamsHelper(filterParams){
     const queryParams = [];
@@ -26,12 +27,14 @@ const ShoppingListing = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const {productList, productDetails} = useSelector(state => state.shopProducts);
+    const { cartItems } = useSelector(state => state.shopCart)
     const [filters, setFilters] = useState({});
     const [sort, setSort] = useState(null);
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const {user} = useSelector((state) => state.auth);
-    const categorySearchParam = searchParams.get("category")
+    const categorySearchParam = searchParams.get("category");
+    const { toast } = useToast();
     function handleSort(value){
         setSort(value);
     }
@@ -64,7 +67,6 @@ const ShoppingListing = () => {
         if(productDetails !== null) setOpenDetailsDialog(true)
       }, [productDetails])
       function handleAddtoCart(getCurrentProductId, getTotalStock){
-        console.log(cartItems, 'dsdsd');
         let getCartItems = cartItems.items || [];
         if(getCartItems.length){
           const indexOfCurrentItem = getCartItems.findIndex(
@@ -135,7 +137,7 @@ const ShoppingListing = () => {
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
                 {
                     productList && productList.length > 0 ?
-                    productList.map((productItem) => <ShoppingProductTile product={productItem} handleGetProductDetails={handleGetProductDetails}/>) 
+                    productList.map((productItem) => <ShoppingProductTile product={productItem} handleGetProductDetails={handleGetProductDetails} handleAddtoCart={handleAddtoCart}/>) 
                     : null
                 }
             </div>

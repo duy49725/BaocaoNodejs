@@ -18,6 +18,8 @@ const adminUserRoutes = require('./routes/admin/user-routes');
 const adminDashboardRoutes = require('./routes/admin/dashboard-routes');
 const adminPostRoutes = require('./routes/admin/post-routes');
 const adminCommentRoutes = require('./routes/admin/comment-routes');
+const  EmailSender  = require('./controllers/common/send-email');
+
 mongoose.connect('mongodb+srv://duy49725:hZENb3CXpNcL4x2s@cluster0.nrc2f.mongodb.net/mern')
     .then()
     .catch((error) => console.log(error));
@@ -40,8 +42,6 @@ app.use(
         credentials: true
     })
 );
-
-
 
 app.use(cookieParser());
 app.use(express.json());
@@ -66,5 +66,16 @@ app.use('/api/admin/publisher', adminPublisherRouter);
 app.use('/api/admin/user', adminUserRoutes);
 app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/comment', adminCommentRoutes);
+
+
+app.post("/send", async (req, res) => {
+    try {
+      const { fullName,email,phone,message} = req.body
+      EmailSender({fullName,email,phone,message})
+      res.json({ msg: "Your message sent successfully" });
+    } catch (error) {
+      res.status(404).json({ msg: error.message });
+    }
+  });
 
 app.listen(PORT, () => console.log(`Server is now running on ${PORT}`))

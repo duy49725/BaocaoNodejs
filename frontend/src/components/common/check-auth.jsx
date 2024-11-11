@@ -22,6 +22,9 @@ function CheckAuth({isAuthenticated, user, children}){
             return <Navigate to="/shop/home" />
         }
     }
+    if(!isAuthenticated && location.pathname.includes('/shop/account')){
+        return <Navigate to="/shop/home" />
+    }
     if (isAuthenticated && user?.role !== 'admin' && location.pathname.includes('/admin')) {
         return <Navigate to="/shop" />
     }

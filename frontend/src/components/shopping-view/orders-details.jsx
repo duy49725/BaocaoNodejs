@@ -68,7 +68,7 @@ const ShoppingOrderDetailsView = ({ orderDetails }) => {
                         <div className='font-medium'>Shipping Info</div>
                         <ul className='grid gap-3'>
                             <li className='grid gap-0.5 text-muted-foreground'>
-                                <span>{user.userName}</span>
+                                <span>{user?.userName}</span>
                                 <span>{orderDetails?.addressInfo?.address}</span>
                                 <span>{orderDetails?.addressInfo?.city}</span>
                                 <span>{orderDetails?.addressInfo?.pincode}</span>

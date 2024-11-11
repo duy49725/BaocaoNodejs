@@ -1,5 +1,6 @@
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const createUser = async(req, res) => {
     const {userName, email, password, role, isActive} = req.body;
@@ -150,12 +151,6 @@ const updateUser = async(req, res, next) => {
                 message: "Username cannot contain spaces",
             });
         }
-        if(req.body.userName !== req.body.userName.toLowerCase()){
-            return res.status(400).json({
-                success: false,
-                message: "Password must be at least 6 characters",
-            });
-        }
         if(!req.body.userName.match(/^[a-zA-Z0-9]+$/)){
             return res.status(400).json({
                 success: false,
@@ -174,11 +169,23 @@ const updateUser = async(req, res, next) => {
                 }
             },{new:true}
         )
-        const {password, ...rest} = updatedUser._doc;
-        res.status(200).json({
+        const token = jwt.sign({
+            id: updatedUser._id,
+            role: updatedUser.role,
+            email: updatedUser.email,
+            userName: updatedUser.userName,
+            profilePircture: updatedUser.profilePircture
+        }, "CLIENT_SECRET_KEY",{expiresIn: "60m"})
+        res.cookie('token', token, {httpOnly: true, secure: false}).json({
             success: true,
-            message: 'Authenticated user!',
-            user: rest
+            message: "Update Profile Successfully",
+            user: {
+                email: updatedUser.email,
+                role: updatedUser.role,
+                id: updatedUser._id,
+                userName: updatedUser.userName,
+                profilePircture: updatedUser.profilePircture
+            }
         })
     } catch (error) {
         res.status(500).json({

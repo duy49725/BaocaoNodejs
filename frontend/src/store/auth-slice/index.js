@@ -4,7 +4,8 @@ import axios from "axios";
 const initialState = {
     isAuthenticated: false,
     isLoading: true,
-    user: null
+    user: null,
+    error: null
 };
 
 export const registerUser = createAsyncThunk('/auth/register',
@@ -61,14 +62,24 @@ export const checkAuth = createAsyncThunk('/auth/checkauth',
     }
 )
 
-export const updateCurrentUser = createAsyncThunk('/auth/updateCurrentUser',
-    async ({formData, userId}) => {
-        const response = await axios.put(`http://localhost:5000/api/admin/user/update/${userId}`,formData, {
-            withCredentials: true,
-        })
-        return response.data;
+export const updateCurrentUser = createAsyncThunk(
+    '/auth/updateCurrentUser',
+    async ({ formData, userId }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/admin/user/update/${userId}`,
+                formData,
+                {
+                    withCredentials: true,
+                }
+            );
+            return response.data;
+        } catch (error) {
+            // Nếu có lỗi, trả về giá trị bị lỗi
+            return rejectWithValue(error.response?.data?.message || 'Something went wrong')
+        }
     }
-)
+);
 
 
 const authSlice = createSlice({
@@ -139,18 +150,18 @@ const authSlice = createSlice({
                 state.isAuthenticated = false
             })
             .addCase(updateCurrentUser.pending, (state) => {
-                state.isLoading = true
+                state.isLoading = true;
             })
             .addCase(updateCurrentUser.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.user = action.payload.success ? action.payload.user : null;
-                state.isAuthenticated = action.payload.success
+                state.isAuthenticated = action.payload.success;
             })
             .addCase(updateCurrentUser.rejected, (state, action) => {
                 state.isLoading = false;
-                state.user = null;
                 state.isAuthenticated = false;
-            })
+                state.error = action.payload;
+            });
     }
 })
 
